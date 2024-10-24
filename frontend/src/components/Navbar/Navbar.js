@@ -55,6 +55,9 @@ const Navbar = () => {
             <Typography sx={styles.userName} variant="h6">
               {user.name}
             </Typography>
+            <Typography sx={styles.userName} variant="h6">
+              {user.tokens}
+            </Typography>
             <Button
               variant="contained"
               sx={styles.logout}
