@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: backend
+    command: npm run dev
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    ports:
+      - '5001:5001'
+    depends_on:
+      - mongodb
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017/mydatabase
+      - NODE_ENV=development
+      - PORT=5001
+    networks:
+      - pidwin-network
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    command: npm start
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+      - WATCHPACK_POLLING=true
+    networks:
+      - pidwin-network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - pidwin-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  pidwin-network:
+    driver: bridge
