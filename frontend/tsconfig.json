@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "jsx": "react-jsx",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                                      /* Enable all strict type-checking options. */
+    "useUnknownInCatchVariables": true,                  /* Default catch clause variables as 'unknown' instead of 'any'. */
+    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+  }
+}
