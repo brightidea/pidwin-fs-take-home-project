@@ -26,7 +26,7 @@ const signup = async (req, res) => {
         _id: result._id,
         name: result.name,
         email: result.email,
-        password: result.hashedPassword,
+        password: result.password,
         tokens: result.tokens,
       },
       "test",
@@ -36,7 +36,6 @@ const signup = async (req, res) => {
     res.status(200).json({ token });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
-    console.log(error);
   }
 };
 

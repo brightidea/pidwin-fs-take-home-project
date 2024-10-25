@@ -1,11 +1,13 @@
-import { LOGIN, LOGOUT } from "../constants/actionTypes";
+import { LOGIN, LOGOUT, COIN_TOSS } from "../constants/actionTypes";
 
 export interface AppState {
-    authData?: LoginForm | null;
+    user?: AuthData | null;
+    coinToss?: CoinTossResponseData | null;
     data?: any;
 }
 
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 export type User = {
     id: string;
@@ -16,6 +18,10 @@ export type User = {
     exp: number;
 } | null;
 
+export type AuthData = {
+    token: string | null;
+    userData: User | null;
+};
 export interface LoginForm {
     email: string;
     password: string;
@@ -34,6 +40,22 @@ export interface ChangePasswordForm {
     newPassword: string;
 }
 
+export type CoinTossForm = {
+    wager: number;
+    coinSide: string;
+};
+
+export type CoinTossResponseData = {
+    currentToss: currentTossData | null;
+};
+
+export type currentTossData = {
+    result: string;
+    resultSide: string;
+    winnings: number;
+    tokens: number;
+};
+
 export interface InputPropsType {
     name: string;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -45,16 +67,16 @@ export interface InputPropsType {
     handleShowPassword?: (e) => void;
 }
 
-type ActionType = LOGIN | LOGOUT;
+type ActionType = typeof LOGIN | typeof LOGOUT | typeof COIN_TOSS;
 
 export interface Action {
     type: ActionType;
-    payload?: any;
+    payload?: unknown;
 }
 
 interface LoginAction {
     type: typeof LOGIN;
-    data: LoginForm | null;
+    data: AuthData | null;
 }
 
 interface LogoutAction {
@@ -62,4 +84,10 @@ interface LogoutAction {
     data?: never;
 }
 
+interface CoinTossAction {
+    type: typeof COIN_TOSS;
+    data?: CoinTossResponseData | null;
+}
+
 export type AuthAction = LoginAction | LogoutAction;
+export type TossAction = CoinTossAction;

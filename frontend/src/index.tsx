@@ -4,12 +4,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import App from "./App";
 import "./index.css";
 import loginReducer from "./reducers/login";
+import coinTossReducer from "./reducers/coinToss";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "./themes/Default";
 
 const store = configureStore({
     reducer: {
-        login: loginReducer,
+        user: loginReducer,
+        coinToss: coinTossReducer,
     },
 });
 const root = ReactDOM.createRoot(

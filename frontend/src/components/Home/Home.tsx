@@ -1,24 +1,22 @@
+import { useSelector } from "react-redux";
 import { Container, Grow, Paper, Typography } from "@mui/material";
-import { jwtDecode } from "jwt-decode";
+import { RootState, User } from "../../types";
 
-type User = {
-    name: string;
-} | null;
+import CoinToss from "../CoinToss/CoinToss";
 
 const Home = () => {
-    const user: User = localStorage.getItem("profile")
-        ? jwtDecode(JSON.parse(localStorage.getItem("profile") ?? "").token)
-        : null;
+    const user: Partial<User> = useSelector(
+        (state: RootState) => state.user.userData
+    );
+
     const isSignedIn = user;
 
     return (
         <Grow in>
             <Container component="main" maxWidth="sm">
-                <Paper elevation={3}>
+                <Paper elevation={3} sx={{ p: 2 }}>
                     {isSignedIn ? (
-                        <Typography variant="h4" align="center" color="primary">
-                            {`Welcome ${user.name}`}
-                        </Typography>
+                        <CoinToss />
                     ) : (
                         <Typography variant="h4" align="center" color="primary">
                             Login to Play

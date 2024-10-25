@@ -1,7 +1,8 @@
 import { NavigateFunction } from "react-router-dom";
 import { Dispatch } from "redux";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
-import { LOGIN, LOGOUT } from "../constants/actionTypes";
+import { LOGIN, LOGOUT, UPDATE } from "../constants/actionTypes";
 import * as api from "../api";
 import * as messages from "../messages";
 import { ChangePasswordForm, LoginForm, SignUpForm } from "../types";
@@ -27,7 +28,6 @@ export const login =
     async (dispatch: Dispatch) => {
         try {
             const { data } = await api.login(formData);
-            console.log("login Data: ", data);
             dispatch({ type: LOGIN, data });
             history("/");
             messages.success("Login Successful");
@@ -44,7 +44,6 @@ export const changePassword =
     async (dispatch: Dispatch) => {
         try {
             const { data } = await api.changePassword(formData);
-            console.log("Password Change Data: ", data);
             dispatch({ type: LOGOUT, data });
             messages.success("Password Change Was Successful");
             history("/");
@@ -55,3 +54,18 @@ export const changePassword =
             messages.error(axiosError.response.data.message);
         }
     };
+
+export const getProfile = createAsyncThunk(
+    "user/getProfile",
+    async (_, { dispatch }) => {
+        try {
+            const { data } = await api.getProfile();
+            dispatch({ type: UPDATE, data });
+        } catch (error) {
+            const axiosError = error as {
+                response: { data: { message: string } };
+            };
+            messages.error(axiosError.response.data.message);
+        }
+    }
+);

@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from 'dotenv';
 import userRouter from "./src/api/user.js";
+import coinTossRouter from "./src/api/coin-toss.js";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ limit: "5mb", extended: true }));
 
 app.use(cors());
 app.use("/api/user", userRouter);
+app.use("/api/coinToss", coinTossRouter);
 
 const PORT = process.env.PORT || 5001;
 

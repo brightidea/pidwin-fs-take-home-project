@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     Container,
     AppBar,
@@ -7,24 +7,19 @@ import {
     Avatar,
     Button,
 } from "@mui/material";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { jwtDecode } from "jwt-decode";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getProfile } from "../../actions/login";
 import * as actionType from "../../constants/actionTypes";
-import { User } from "../../types";
+import { AppDispatch, RootState, User } from "../../types";
 import { styles } from "./styles";
 
 const Navbar = () => {
-    const [user, setUser] = useState<User>(
-        localStorage.getItem("profile")
-            ? jwtDecode(JSON.parse(localStorage.getItem("profile") ?? "").token)
-            : null
-    );
-
-    const dispatch = useDispatch();
-    let location = useLocation();
+    const dispatch = useDispatch<AppDispatch>();
     const history = useNavigate();
 
+    const userState = useSelector((state: RootState) => state.user);
+    const [user, setUser] = useState<Partial<User> | null>(userState.userData);
     const logout = () => {
         dispatch({ type: actionType.LOGOUT });
         history("/auth");
@@ -32,17 +27,18 @@ const Navbar = () => {
     };
 
     useEffect(() => {
-        if (user) {
-            if (user.exp * 1000 < new Date().getTime()) logout();
+        if (userState) {
+            if (userState.exp && userState.exp * 1000 < new Date().getTime())
+                logout();
+            if (!userState.userData) {
+                dispatch(getProfile());
+            }
+            if (userState.userData) {
+                setUser(userState.userData);
+            }
         }
-        setUser(
-            localStorage.getItem("profile")
-                ? jwtDecode(
-                      JSON.parse(localStorage.getItem("profile") ?? "").token
-                  )
-                : null
-        );
-    }, [location]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <AppBar sx={styles.appBar} position="static" color="inherit">
@@ -58,21 +54,23 @@ const Navbar = () => {
                 </Typography>
             </Container>
             <Toolbar sx={styles.toolbar}>
-                {user ? (
+                {userState.userData ? (
                     <Container sx={styles.profile}>
+                        <Typography sx={styles.userName} variant="h6">
+                            Tokens: {userState.userData.tokens}
+                        </Typography>
+
                         <Avatar
                             sx={styles.purple}
-                            alt={user.name}
-                            src={user.picture}
+                            alt={userState.userData.name}
+                            src={userState.userData.picture}
                         >
-                            {user.name.charAt(0)}
+                            {user?.name?.charAt(0)}
                         </Avatar>
                         <Typography sx={styles.userName} variant="h6">
-                            {user.name}
+                            {userState.userData.name}
                         </Typography>
-                        <Typography sx={styles.userName} variant="h6">
-                            {user.tokens}
-                        </Typography>
+
                         <Button
                             variant="contained"
                             sx={styles.logout}
