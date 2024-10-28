@@ -22,6 +22,7 @@ const CoinTossTile = ({
 
     return (
         <Card
+            data-testid="coin-toss-tile"
             key={_id}
             sx={{
                 ...styles.historyTile,
