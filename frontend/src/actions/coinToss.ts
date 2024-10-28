@@ -1,6 +1,6 @@
 import { Dispatch } from "redux";
 
-import { COIN_TOSS } from "../constants/actionTypes";
+import { COIN_TOSS, COIN_TOSSES } from "../constants/actionTypes";
 import * as api from "../api";
 import * as messages from "../messages";
 import { CoinTossForm } from "../types";
@@ -18,3 +18,15 @@ export const coinToss =
             messages.error(axiosError.response.data.message);
         }
     };
+
+export const getCoinTosses = () => async (dispatch: Dispatch) => {
+    try {
+        const { data } = await api.getCoinTosses();
+        dispatch({ type: COIN_TOSSES, data });
+    } catch (error) {
+        const axiosError = error as {
+            response: { data: { message: string } };
+        };
+        messages.error(axiosError.response.data.message);
+    }
+};

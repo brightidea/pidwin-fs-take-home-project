@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
 import {
     Container,
     AppBar,
@@ -6,9 +6,14 @@ import {
     Toolbar,
     Avatar,
     Button,
+    Box,
 } from "@mui/material";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { jwtDecode } from "jwt-decode";
 import { getProfile } from "../../actions/login";
 import * as actionType from "../../constants/actionTypes";
 import { AppDispatch, RootState, User } from "../../types";
@@ -17,41 +22,49 @@ import { styles } from "./styles";
 const Navbar = () => {
     const dispatch = useDispatch<AppDispatch>();
     const history = useNavigate();
-
     const userState = useSelector((state: RootState) => state.user);
+    const coinTossState = useSelector((state: RootState) => state.coinToss);
     const [user, setUser] = useState<Partial<User> | null>(userState.userData);
-    const logout = () => {
+
+    const logout = useCallback(() => {
         dispatch({ type: actionType.LOGOUT });
         history("/auth");
         setUser(null);
-    };
+    }, [dispatch, history]);
 
     useEffect(() => {
-        if (userState) {
-            if (userState.exp && userState.exp * 1000 < new Date().getTime())
+        const authToken = localStorage.getItem("profile");
+        if (authToken) {
+            const decodedToken = jwtDecode(authToken);
+            if (
+                decodedToken.exp &&
+                decodedToken.exp * 1000 < new Date().getTime()
+            ) {
                 logout();
-            if (!userState.userData) {
-                dispatch(getProfile());
             }
-            if (userState.userData) {
-                setUser(userState.userData);
+            if (userState) {
+                if (!userState.userData) {
+                    dispatch(getProfile());
+                }
+                if (userState.userData) {
+                    setUser(userState.userData);
+                }
             }
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [userState, coinTossState]);
 
     return (
         <AppBar sx={styles.appBar} position="static" color="inherit">
             <Container sx={styles.brandContainer}>
-                <Typography
-                    component={Link}
-                    to="/"
-                    sx={styles.heading}
-                    variant="h5"
-                    align="center"
-                >
-                    CoinToss
-                </Typography>
+                <Link to="/">
+                    <img
+                        src={process.env.PUBLIC_URL + "/logo.png"}
+                        alt="Game Logo"
+                        style={styles.logo}
+                    />
+                </Link>
             </Container>
             <Toolbar sx={styles.toolbar}>
                 {userState.userData ? (
@@ -59,35 +72,47 @@ const Navbar = () => {
                         <Typography sx={styles.userName} variant="h6">
                             Tokens: {userState.userData.tokens}
                         </Typography>
-
-                        <Avatar
-                            sx={styles.purple}
-                            alt={userState.userData.name}
-                            src={userState.userData.picture}
-                        >
-                            {user?.name?.charAt(0)}
-                        </Avatar>
-                        <Typography sx={styles.userName} variant="h6">
-                            {userState.userData.name}
-                        </Typography>
-
-                        <Button
-                            variant="contained"
-                            sx={styles.logout}
-                            color="secondary"
-                            onClick={logout}
-                        >
-                            Logout
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => {
-                                history("/password");
-                            }}
-                        >
-                            Set Password
-                        </Button>
+                        <Box sx={styles.avatar}>
+                            <Avatar
+                                sx={styles.purple}
+                                alt={userState.userData.name}
+                                src={userState.userData.picture}
+                            >
+                                {user?.name?.charAt(0)}
+                            </Avatar>
+                            <Box sx={styles.avatarText}>
+                                <Typography
+                                    sx={styles.userName}
+                                    variant="subtitle1"
+                                >
+                                    Welcome,
+                                </Typography>
+                                <Typography sx={styles.userName} variant="h6">
+                                    {userState.userData.name}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Box>
+                            <Button
+                                aria-label="password settings"
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => {
+                                    history("/password");
+                                }}
+                            >
+                                <SettingsIcon />
+                            </Button>
+                            <Button
+                                aria-label="logout"
+                                variant="contained"
+                                sx={styles.logout}
+                                color="secondary"
+                                onClick={logout}
+                            >
+                                <LogoutIcon />
+                            </Button>
+                        </Box>
                     </Container>
                 ) : (
                     <Button
@@ -96,7 +121,7 @@ const Navbar = () => {
                         variant="contained"
                         color="primary"
                     >
-                        Login
+                        <LockOpenIcon /> Login
                     </Button>
                 )}
             </Toolbar>

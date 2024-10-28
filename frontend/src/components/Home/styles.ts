@@ -9,21 +9,7 @@ export const styles = {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "10px 20px",
-    },
-    logo: { width: "100px" },
-    avatar: {
-        display: "flex",
-        color: "grey",
-        gap: 1,
-        textTransform: "capitalize",
-    },
-    avatarText: {
-        display: "flex",
-        flexDirection: "column",
-        gap: 0,
-        padding: 0,
-        margin: 0,
+        padding: "10px 50px",
     },
     heading: {
         color: "rgba(0,183,255, 1)",
@@ -37,14 +23,11 @@ export const styles = {
     profile: {
         display: "flex",
         justifyContent: "space-between",
-        width: "600px",
+        width: "400px",
     },
     userName: {
         display: "flex",
         alignItems: "center",
-        lineHeight: 1,
-        margin: 0,
-        padding: 0,
     },
     brandContainer: {
         display: "flex",
@@ -53,8 +36,5 @@ export const styles = {
     purple: {
         color: theme.palette.getContrastText(deepPurple[500]),
         backgroundColor: deepPurple[500],
-    },
-    logout: {
-        marginLeft: "20px",
     },
 };

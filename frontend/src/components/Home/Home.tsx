@@ -13,16 +13,16 @@ const Home = () => {
 
     return (
         <Grow in>
-            <Container component="main" maxWidth="sm">
-                <Paper elevation={3} sx={{ p: 2 }}>
-                    {isSignedIn ? (
-                        <CoinToss />
-                    ) : (
+            <Container component="main" maxWidth="lg">
+                {isSignedIn ? (
+                    <CoinToss />
+                ) : (
+                    <Paper elevation={3} sx={{ p: 2 }}>
                         <Typography variant="h4" align="center" color="primary">
                             Login to Play
                         </Typography>
-                    )}
-                </Paper>
+                    </Paper>
+                )}
             </Container>
         </Grow>
     );

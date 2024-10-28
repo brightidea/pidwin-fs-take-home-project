@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Avatar,
     Button,
@@ -58,92 +58,93 @@ const Login = () => {
         setIsLoggedIn((prevState) => !prevState);
     };
 
-    if (user) {
-        history("/");
-        return null;
-    } else {
-        return (
-            <div>
-                <Container component="main" maxWidth="xs">
-                    <Paper sx={styles.paper} elevation={3}>
-                        <Avatar sx={styles.avatar}>
-                            {" "}
-                            <LockIcon />
-                        </Avatar>
-                        <Typography variant="h5" color="primary">
-                            {isLoggedIn ? "Login" : "Sign Up"}
-                        </Typography>
-                        <form style={styles.form} onSubmit={handleSubmit}>
-                            <Grid container spacing={2}>
-                                {!isLoggedIn && (
-                                    <>
-                                        <Input
-                                            name="firstName"
-                                            label="First Name"
-                                            handleChange={handleChange}
-                                            autoFocus
-                                            half
-                                        />
-                                        <Input
-                                            name="lastName"
-                                            label="Last Name"
-                                            handleChange={handleChange}
-                                            half
-                                        />
-                                    </>
-                                )}
+    useEffect(() => {
+        if (user) {
+            history("/");
+        }
+    }, [user, history]);
 
-                                <Input
-                                    name="email"
-                                    label="Email Address"
-                                    handleChange={handleChange}
-                                    type="email"
-                                />
-                                <Input
-                                    name="password"
-                                    label="Password"
-                                    handleChange={handleChange}
-                                    type={showPassword ? "text" : "password"}
-                                    handleShowPassword={handleShowPassword}
-                                    half={isLoggedIn ? false : true}
-                                    value={formData.password}
-                                />
-                                {!isLoggedIn && (
-                                    <>
-                                        <Input
-                                            name="confirmPassword"
-                                            label="Confirm Password"
-                                            handleChange={handleChange}
-                                            type="password"
-                                            half
-                                        />
-                                    </>
-                                )}
+    return (
+        <div>
+            <Container component="main" maxWidth="xs">
+                <Paper sx={styles.paper} elevation={3}>
+                    <Avatar sx={styles.avatar}>
+                        {" "}
+                        <LockIcon />
+                    </Avatar>
+                    <Typography variant="h5" color="primary">
+                        {isLoggedIn ? "Login" : "Sign Up"}
+                    </Typography>
+                    <form style={styles.form} onSubmit={handleSubmit}>
+                        <Grid container spacing={2}>
+                            {!isLoggedIn && (
+                                <>
+                                    <Input
+                                        name="firstName"
+                                        label="First Name"
+                                        handleChange={handleChange}
+                                        autoFocus
+                                        half
+                                    />
+                                    <Input
+                                        name="lastName"
+                                        label="Last Name"
+                                        handleChange={handleChange}
+                                        half
+                                    />
+                                </>
+                            )}
+
+                            <Input
+                                name="email"
+                                label="Email Address"
+                                handleChange={handleChange}
+                                type="email"
+                            />
+                            <Input
+                                name="password"
+                                label="Password"
+                                handleChange={handleChange}
+                                type={showPassword ? "text" : "password"}
+                                handleShowPassword={handleShowPassword}
+                                half={isLoggedIn ? false : true}
+                                value={formData.password}
+                            />
+                            {!isLoggedIn && (
+                                <>
+                                    <Input
+                                        name="confirmPassword"
+                                        label="Confirm Password"
+                                        handleChange={handleChange}
+                                        type="password"
+                                        half
+                                    />
+                                </>
+                            )}
+                        </Grid>
+                        <Button
+                            type="submit"
+                            sx={styles.submit}
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                        >
+                            {isLoggedIn ? "Login" : "Sign Up"}
+                        </Button>
+                        <Grid container justifyContent="flex-end">
+                            <Grid item>
+                                <Button onClick={switchLogin}>
+                                    {isLoggedIn
+                                        ? "Don't Have An Account? Sign Up."
+                                        : "Already Have An Account? Login."}
+                                </Button>
                             </Grid>
-                            <Button
-                                type="submit"
-                                sx={styles.submit}
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                            >
-                                {isLoggedIn ? "Login" : "Sign Up"}
-                            </Button>
-                            <Grid container justifyContent="flex-end">
-                                <Grid item>
-                                    <Button onClick={switchLogin}>
-                                        {isLoggedIn
-                                            ? "Don't Have An Account? Sign Up."
-                                            : "Already Have An Account? Login."}
-                                    </Button>
-                                </Grid>
-                            </Grid>
-                        </form>
-                    </Paper>
-                </Container>
-            </div>
-        );
-    }
+                        </Grid>
+                    </form>
+                </Paper>
+            </Container>
+        </div>
+    );
 };
 
 export default Login;

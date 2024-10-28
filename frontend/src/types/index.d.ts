@@ -21,6 +21,7 @@ export type User = {
 export type AuthData = {
     token: string | null;
     userData: User | null;
+    tossHistory: coinToss[] | null;
 };
 export interface LoginForm {
     email: string;
@@ -47,13 +48,37 @@ export type CoinTossForm = {
 
 export type CoinTossResponseData = {
     currentToss: currentTossData | null;
+    tossHistory: coinToss[] | null;
 };
 
 export type currentTossData = {
+    bonusLevel: number;
     result: string;
     resultSide: string;
     winnings: number;
+    winStreak: number;
     tokens: number;
+    tossHistory: coinToss[];
+};
+
+export type coinToss = {
+    _id: string;
+    bonus_level: number;
+    date: Date;
+    user_id: number;
+    wager: number;
+    selected_side: string;
+    result_side: string;
+    is_win: string;
+    winnings: number;
+};
+
+export type CoinTossResultMessageProps = {
+    result: string;
+    resultSide: string;
+    winnings: number;
+    winStreak: number;
+    onPlayAgain: () => void;
 };
 
 export interface InputPropsType {
@@ -89,5 +114,10 @@ interface CoinTossAction {
     data?: CoinTossResponseData | null;
 }
 
+interface CoinTossHistoryAction {
+    type: typeof COIN_TOSSES;
+    data?: { tossHistory: coinToss[] } | null;
+}
+
 export type AuthAction = LoginAction | LogoutAction;
-export type TossAction = CoinTossAction;
+export type TossAction = CoinTossAction | CoinTossHistoryAction;
